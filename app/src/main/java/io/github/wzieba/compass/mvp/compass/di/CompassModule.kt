@@ -7,6 +7,8 @@ import io.github.wzieba.compass.data.compass.OnCompassValueChangeEmitter
 import io.github.wzieba.compass.di.ActivityScope
 import io.github.wzieba.compass.model.CompassIndication
 import io.github.wzieba.compass.mvp.compass.CompassActivity
+import io.github.wzieba.compass.mvp.compass.view.CompassView
+import io.github.wzieba.compass.mvp.compass.view.CompassViewImpl
 import io.reactivex.subjects.PublishSubject
 
 @Module
@@ -24,5 +26,15 @@ class CompassModule(private val compassActivity: CompassActivity) {
             publishSubject: PublishSubject<CompassIndication>
     ): OnCompassValueChangeEmitter {
         return OnCompassValueChangeEmitter(publishSubject)
+    }
+
+    @Module
+    companion object {
+        @Provides
+        @JvmStatic
+        fun provideCompassView(compassViewImpl: CompassViewImpl): CompassView {
+            return compassViewImpl
+        }
+        //https://google.github.io/dagger/faq.html#what-do-i-do-instead
     }
 }

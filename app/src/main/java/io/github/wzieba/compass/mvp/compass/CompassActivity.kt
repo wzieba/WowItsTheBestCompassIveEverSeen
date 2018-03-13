@@ -10,6 +10,7 @@ import io.github.wzieba.compass.mvp.compass.di.CompassComponent
 import io.github.wzieba.compass.mvp.compass.di.CompassModule
 import io.github.wzieba.compass.mvp.compass.di.DaggerCompassComponent
 import io.github.wzieba.compass.mvp.compass.presenter.CompassPresenter
+import io.github.wzieba.compass.mvp.compass.view.CompassView
 import javax.inject.Inject
 
 class CompassActivity : AppCompatActivity() {
@@ -18,6 +19,9 @@ class CompassActivity : AppCompatActivity() {
 
     @Inject
     lateinit var presenter: CompassPresenter
+
+    @Inject
+    lateinit var view: CompassView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
