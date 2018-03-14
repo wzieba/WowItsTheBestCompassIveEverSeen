@@ -3,7 +3,6 @@ package io.github.wzieba.compass.data.compass
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
-import android.util.Log
 import io.github.wzieba.compass.di.ActivityScope
 import io.github.wzieba.compass.model.CompassIndication
 import io.reactivex.Observable

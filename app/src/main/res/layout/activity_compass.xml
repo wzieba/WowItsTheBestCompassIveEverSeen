@@ -6,14 +6,25 @@
 
     <data>
 
+        <import type="java.lang.Double" />
+
+        <import type="io.github.wzieba.compass.android.DataBindingConversionMethods" />
+
         <variable
             name="viewModel"
             type="io.github.wzieba.compass.mvp.compass.view.viewmodel.CompassViewModel" />
+
+        <variable
+            name="listener"
+            type="io.github.wzieba.compass.mvp.compass.view.CompassView.Listener" />
+
     </data>
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/compass_constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:background="@color/md_grey_900"
         tools:context="io.github.wzieba.compass.mvp.compass.CompassActivity">
 
@@ -55,10 +66,54 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:onClick="@{() -> listener.onShowCoordinatesInputClick()}"
             android:text="enter coordinates"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/enter_coordinates_lat_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:digits="0123456789."
+            android:hint="Lat"
+            android:inputType="number"
+            android:nextFocusDown="@id/enter_coordinates_lng_input"
+            android:singleLine="true"
+            android:text="@={DataBindingConversionMethods.toStringValue(viewModel.latCoordinate)}"
+            app:layout_constraintEnd_toStartOf="@id/enter_coordinates_lng_input"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+        <EditText
+            android:id="@+id/enter_coordinates_lng_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:digits="0123456789."
+            android:hint="Lng"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:singleLine="true"
+            android:text="@={DataBindingConversionMethods.toStringValue(viewModel.lngCoordinate)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/enter_coordinates_lat_input"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+        <Button
+            android:id="@+id/close_coordinates_input_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:onClick="@{() -> listener.onHideCoordinatesInputClick()}"
+            android:text="close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/enter_coordinates_lng_input" />
 
     </android.support.constraint.ConstraintLayout>
 
