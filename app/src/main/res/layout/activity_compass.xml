@@ -5,7 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <!--RFU-->
+
+        <variable
+            name="viewModel"
+            type="io.github.wzieba.compass.mvp.compass.view.viewmodel.CompassViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -40,7 +43,7 @@
             android:layout_height="0dp"
             android:layout_marginEnd="64dp"
             android:layout_marginStart="64dp"
-            app:arrowRotation="@{30.0f}"
+            app:arrowRotation="@{viewModel.arrowRotation}"
             app:layout_constraintBottom_toTopOf="@id/enter_coordinates_button"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintLeft_toLeftOf="parent"
