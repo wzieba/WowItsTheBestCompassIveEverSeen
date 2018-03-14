@@ -1,9 +1,10 @@
 package io.github.wzieba.compass.mvp.compass.presenter
 
 import io.github.wzieba.compass.data.ProvideLocationNameUseCase
-import io.github.wzieba.compass.data.compass.OnCompassValueChangeEmitter
+import io.github.wzieba.compass.data.compass.CompassValueChangeEmitter
 import io.github.wzieba.compass.di.ActivityScope
 import io.github.wzieba.compass.model.BasicLocationData
+import io.github.wzieba.compass.model.CompassIndication
 import io.github.wzieba.compass.model.LatLng
 import io.github.wzieba.compass.mvp.compass.view.CompassView
 import io.github.wzieba.compass.mvp.compass.view.viewmodel.CompassViewModel
@@ -14,19 +15,36 @@ import javax.inject.Inject
 class CompassPresenter @Inject constructor(
         private val compassView: CompassView,
         private val provideLocationNameUseCase: ProvideLocationNameUseCase,
-        onCompassValueChangeEmitter: OnCompassValueChangeEmitter
+        private val compassValueChangeEmitter: CompassValueChangeEmitter
 ) : CompassView.Listener {
+
     private val viewModel = CompassViewModel()
 
     init {
-        onCompassValueChangeEmitter.asObservable()
+        compassValueChangeEmitter.asObservable()
         compassView.setViewModel(viewModel)
         compassView.setListener(this)
+        compassValueChangeEmitter.asObservable()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnNext { compassIndication: CompassIndication ->
+                    viewModel.arrowRotation = compassIndication.degree.toFloat()
+                }
+                .subscribe()
+    }
+
+    override fun onResume() {
+        compassValueChangeEmitter.registerListener()
+    }
+
+    override fun onPause() {
+        compassValueChangeEmitter
+                .asObservable()
+                .unsubscribeOn(AndroidSchedulers.mainThread())
+        compassValueChangeEmitter.unregisterListener()
     }
 
     override fun onShowCoordinatesInputClick() {
-        compassView.showDestinationLocationInput(LatLng(0.0, 0.0))
-        viewModel.isLocationInputVisible = viewModel.isLocationInputVisible.not()
+        compassView.showDestinationLocationInput()
     }
 
     override fun onHideCoordinatesInputClick() {

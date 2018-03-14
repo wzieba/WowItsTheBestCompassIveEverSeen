@@ -28,13 +28,6 @@ class CompassViewModel : BaseObservable() {
         }
 
     @get:Bindable
-    var isLocationInputVisible: Boolean = false
-        set(isLocationInputVisible) {
-            field = isLocationInputVisible
-            notifyPropertyChanged(BR.locationInputVisible)
-        }
-
-    @get:Bindable
     var countryName: String = ""
         set(countryName) {
             field = countryName

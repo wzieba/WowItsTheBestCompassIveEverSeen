@@ -20,7 +20,6 @@ class CompassActivity : AppCompatActivity() {
     @Inject
     lateinit var view: CompassView
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,5 +31,15 @@ class CompassActivity : AppCompatActivity() {
         activityComponent.inject(this)
 
         setContentView(view.asView())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.onPause()
     }
 }

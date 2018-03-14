@@ -8,15 +8,13 @@ import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.AnimationSet
-import android.view.animation.DecelerateInterpolator
 import android.view.animation.RotateAnimation
 import io.github.wzieba.compass.R
 
 private const val ARROW_HEIGHT = 100
 private const val ARROW_WIDTH = 50
 private const val CIRCLE_STROKE_WIDTH = 15f
-private const val ROTATE_ARROW_ANIMATION_DURATION = 1500L
+private const val ROTATE_ARROW_ANIMATION_DURATION = 15L
 
 class CompassWidget @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -26,17 +24,13 @@ class CompassWidget @JvmOverloads constructor(
     private val arrowIcon: Drawable = ContextCompat.getDrawable(context, R.drawable.ic_long_arrow_pointing_up)
     private val paint = Paint()
 
-    private val animSet = AnimationSet(true)
+    private var previousDegrees = 0.0f
 
     init {
         arrowIcon.colorFilter = LightingColorFilter(arrowColor, arrowColor)
         paint.style = Paint.Style.STROKE
         paint.color = arrowColor
         paint.strokeWidth = CIRCLE_STROKE_WIDTH
-
-        animSet.interpolator = DecelerateInterpolator()
-        animSet.fillAfter = true
-        animSet.isFillEnabled = true
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -55,16 +49,18 @@ class CompassWidget @JvmOverloads constructor(
 
 
     fun rotateArrow(degrees: Float) {
-        val animRotate = RotateAnimation(
-                0.0f, degrees,
-                RotateAnimation.RELATIVE_TO_SELF, 0.5f,
-                RotateAnimation.RELATIVE_TO_SELF, 0.5f
-        )
+        if (degrees != previousDegrees) {
+            val animRotate = RotateAnimation(
+                    previousDegrees,
+                    -degrees,
+                    RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+                    RotateAnimation.RELATIVE_TO_SELF, 0.5f
+            )
+            previousDegrees = -degrees
+            animRotate.duration = ROTATE_ARROW_ANIMATION_DURATION
+            animRotate.fillAfter = true
+            startAnimation(animRotate)
+        }
 
-        animRotate.duration = ROTATE_ARROW_ANIMATION_DURATION
-        animRotate.fillAfter = true
-        animSet.addAnimation(animRotate)
-        startAnimation(animSet)
     }
-
 }

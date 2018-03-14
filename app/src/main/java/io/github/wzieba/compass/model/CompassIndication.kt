@@ -1,12 +1,5 @@
 package io.github.wzieba.compass.model
 
-import android.hardware.SensorEvent
 
+data class CompassIndication(val degree: Int)
 
-class CompassIndication {
-
-
-    companion object {
-        fun map(sensorEvent: SensorEvent) = CompassIndication()
-    }
-}

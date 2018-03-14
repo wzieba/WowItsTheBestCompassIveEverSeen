@@ -26,7 +26,7 @@ class CompassViewImpl @Inject constructor(private val activityContext: Context) 
         binding.listener = listener
     }
 
-    override fun showDestinationLocationInput(latLng: LatLng) {
+    override fun showDestinationLocationInput() {
         val hiddenInputConstraintSet = ConstraintSet()
         val visibleInputConstraintSet = ConstraintSet()
 

@@ -8,7 +8,7 @@ class DataBindingConversionMethods {
         @InverseMethod("toStringValue")
         @JvmStatic
         fun toDoubleValue(value: String): Double =
-                if (value.isEmpty()) {
+                if (value.isEmpty() || value == "-") {
                     0.0
                 } else {
                     value.toDouble()
