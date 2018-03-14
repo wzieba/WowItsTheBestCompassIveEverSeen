@@ -1,11 +1,11 @@
 package io.github.wzieba.compass.mvp.compass
 
-import android.support.v7.app.AppCompatActivity
+import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import io.github.wzieba.compass.NavigatorApplication
 import io.github.wzieba.compass.R
-import io.github.wzieba.compass.data.compass.OnCompassValueChangeEmitter
-import io.github.wzieba.compass.di.ActivityScope
+import io.github.wzieba.compass.databinding.ActivityCompassBinding
 import io.github.wzieba.compass.mvp.compass.di.CompassComponent
 import io.github.wzieba.compass.mvp.compass.di.CompassModule
 import io.github.wzieba.compass.mvp.compass.di.DaggerCompassComponent
@@ -34,6 +34,6 @@ class CompassActivity : AppCompatActivity() {
 
         activityComponent.inject(this)
 
-        setContentView(R.layout.activity_main)
+        val binding: ActivityCompassBinding = DataBindingUtil.setContentView(this, R.layout.activity_compass)
     }
 }

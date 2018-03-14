@@ -19,6 +19,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 kapt {
@@ -32,6 +35,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.google.dagger:dagger:2.15'
     kapt 'com.google.dagger:dagger-compiler:2.15'
+    kapt 'com.android.databinding:compiler:2.3.1'
     implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.1'
     testImplementation 'junit:junit:4.12'
     testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
