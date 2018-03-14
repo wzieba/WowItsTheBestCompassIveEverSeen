@@ -6,36 +6,51 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/destination_title"
+        android:id="@+id/destination_country_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textSize="24sp"
+        android:text="@{viewModel.countryName}"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Puerto Rico" />
 
     <TextView
-        android:id="@+id/destination_distance"
+        android:id="@+id/destination_city_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="36sp"
+        android:text="@{viewModel.cityName}"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/destination_title"
-        tools:text="100m" />
+        app:layout_constraintTop_toBottomOf="@id/destination_country_title"
+        tools:text="San Juan" />
 
     <io.github.wzieba.compass.android.view.CompassWidget
+        android:id="@+id/compass_widget"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="64dp"
         android:layout_marginStart="64dp"
-        app:layout_constraintBottom_toTopOf="@id/enter_coordinates_button"
+        app:layout_constraintBottom_toTopOf="@id/destination_distance"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/destination_distance" />
+        app:layout_constraintTop_toBottomOf="@id/destination_city_name" />
+
+    <TextView
+        android:id="@+id/destination_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="36sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/enter_coordinates_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/compass_widget"
+        tools:text="100m" />
 
     <Button
         android:id="@+id/enter_coordinates_button"

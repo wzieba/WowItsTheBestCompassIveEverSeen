@@ -6,7 +6,6 @@ import io.github.wzieba.compass.BR
 
 class CompassViewModel : BaseObservable() {
 
-
     @get:Bindable
     var latCoordinate: Double = 18.454660
         set(latCoordinate) {
@@ -33,5 +32,19 @@ class CompassViewModel : BaseObservable() {
         set(isLocationInputVisible) {
             field = isLocationInputVisible
             notifyPropertyChanged(BR.locationInputVisible)
+        }
+
+    @get:Bindable
+    var countryName: String = ""
+        set(countryName) {
+            field = countryName
+            notifyPropertyChanged(BR.countryName)
+        }
+
+    @get:Bindable
+    var cityName: String = ""
+        set(cityName) {
+            field = cityName
+            notifyPropertyChanged(BR.cityName)
         }
 }

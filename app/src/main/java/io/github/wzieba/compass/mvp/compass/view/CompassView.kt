@@ -14,6 +14,7 @@ interface CompassView {
     interface Listener {
         fun onShowCoordinatesInputClick()
         fun onHideCoordinatesInputClick()
+        fun onLocationInputChanged()
     }
 
 }
