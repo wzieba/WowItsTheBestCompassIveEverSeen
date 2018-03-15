@@ -66,7 +66,9 @@ class CompassPresenter @Inject constructor(
 
     fun getStateForSave(): Map<String, Serializable> {
         val state = HashMap<String, Serializable>()
-        state[VIEW_MODEL] = viewModel!!
+        if (viewModel != null) {
+            state[VIEW_MODEL] = viewModel!!
+        }
         return state
     }
 
