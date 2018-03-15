@@ -1,11 +1,10 @@
-package io.github.wzieba.compass.domain
+package io.github.wzieba.compass.domain.location
 
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import io.github.wzieba.compass.di.ActivityScope
-import io.github.wzieba.compass.domain.location.LocationRepository
 import io.github.wzieba.compass.model.LatLng
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -13,7 +12,7 @@ import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 @ActivityScope
-class ProvideCurrentLocationUseCase @Inject constructor(
+class CurrentLocationEmitter @Inject constructor(
         private val fusedLocationProviderClient: FusedLocationProviderClient,
         private val notifier: PublishSubject<LatLng>,
         private val locationRepository: LocationRepository
@@ -39,6 +38,6 @@ class ProvideCurrentLocationUseCase @Inject constructor(
     }
 
     fun asObservable(): Observable<LatLng> {
-        return notifier.observeOn(Schedulers.io())
+        return notifier.subscribeOn(Schedulers.io())
     }
 }

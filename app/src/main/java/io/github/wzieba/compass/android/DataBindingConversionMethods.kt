@@ -1,6 +1,7 @@
 package io.github.wzieba.compass.android
 
 import android.databinding.InverseMethod
+import android.location.Location
 
 class DataBindingConversionMethods {
 

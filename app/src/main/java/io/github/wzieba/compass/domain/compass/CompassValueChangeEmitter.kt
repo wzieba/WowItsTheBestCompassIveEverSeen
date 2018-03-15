@@ -69,6 +69,6 @@ class CompassValueChangeEmitter @Inject constructor(
     fun asObservable(): Flowable<CompassIndication> {
         return notifier.onBackpressureLatest()
                 .onBackpressureDrop()
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
     }
 }

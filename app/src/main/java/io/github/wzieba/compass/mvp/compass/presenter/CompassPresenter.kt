@@ -1,17 +1,22 @@
 package io.github.wzieba.compass.mvp.compass.presenter
 
-import io.github.wzieba.compass.domain.ComputeDistanceUseCase
-import io.github.wzieba.compass.domain.ProvideCurrentLocationUseCase
-import io.github.wzieba.compass.domain.ProvideLocationNameUseCase
-import io.github.wzieba.compass.domain.compass.CompassValueChangeEmitter
+import android.databinding.Observable
+import io.github.wzieba.compass.BR
 import io.github.wzieba.compass.di.ActivityScope
+import io.github.wzieba.compass.domain.compass.CompassValueChangeEmitter
+import io.github.wzieba.compass.domain.location.ComputeDistanceUseCase
+import io.github.wzieba.compass.domain.location.CurrentLocationEmitter
+import io.github.wzieba.compass.domain.location.ProvideLocationNameUseCase
 import io.github.wzieba.compass.formatToDistanceReadable
 import io.github.wzieba.compass.model.BasicLocationData
 import io.github.wzieba.compass.model.CompassIndication
 import io.github.wzieba.compass.model.LatLng
+import io.github.wzieba.compass.mvp.compass.VIEW_MODEL
 import io.github.wzieba.compass.mvp.compass.view.CompassView
 import io.github.wzieba.compass.mvp.compass.view.viewmodel.CompassViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
+import java.io.Serializable
+import java.util.*
 import javax.inject.Inject
 
 @ActivityScope
@@ -19,46 +24,55 @@ class CompassPresenter @Inject constructor(
         private val compassView: CompassView,
         private val provideLocationNameUseCase: ProvideLocationNameUseCase,
         private val compassValueChangeEmitter: CompassValueChangeEmitter,
-        private val provideCurrentLocationUseCase: ProvideCurrentLocationUseCase,
+        private val currentLocationEmitter: CurrentLocationEmitter,
         private val computeDistanceUseCase: ComputeDistanceUseCase
 ) : CompassView.Listener {
 
-    private val viewModel = CompassViewModel()
+    private var viewModel: CompassViewModel? = null
 
-    init {
-        compassValueChangeEmitter.asObservable()
-        compassView.setViewModel(viewModel)
+    fun onCreate(state: Map<String, Serializable>?) {
+        if (state != null) {
+            viewModel = state[VIEW_MODEL] as CompassViewModel?
+        }
+
+        if (viewModel == null)
+            viewModel = CompassViewModel()
+
+        viewModel?.let {
+            compassView.setViewModel(it)
+        }
+
         compassView.setListener(this)
+
         compassValueChangeEmitter.asObservable()
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { compassIndication: CompassIndication ->
-                    viewModel.arrowRotation = compassIndication.degree.toFloat()
+                    viewModel?.arrowRotation = compassIndication.degree.toFloat()
                 }
                 .subscribe()
-        provideCurrentLocationUseCase.asObservable()
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnNext { currentLocation: LatLng ->
-                    computeDistanceUseCase.buildUseCaseObservable(LatLng(viewModel.latCoordinate, viewModel.lngCoordinate))
-                            .subscribeOn(AndroidSchedulers.mainThread())
-                            .doOnNext { distance: Float ->
-                                viewModel.distanceToDestination = distance.formatToDistanceReadable()
-                            }
-                            .subscribe()
+
+        currentLocationEmitter.asObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { _: LatLng ->
+                    updateDistance()
                 }
                 .subscribe()
     }
 
-    override fun onResume() {
+    fun onResume() {
         compassValueChangeEmitter.registerListener()
-        provideCurrentLocationUseCase.registerRequestLocationUpdates()
+        currentLocationEmitter.registerRequestLocationUpdates()
     }
 
-    override fun onPause() {
-        compassValueChangeEmitter
-                .asObservable()
-                .unsubscribeOn(AndroidSchedulers.mainThread())
+    fun getStateForSave(): Map<String, Serializable> {
+        val state = HashMap<String, Serializable>()
+        state[VIEW_MODEL] = viewModel!!
+        return state
+    }
+
+    fun onPause() {
         compassValueChangeEmitter.unregisterListener()
-        provideCurrentLocationUseCase.unregisterRequestLocationUpdates()
+        currentLocationEmitter.unregisterRequestLocationUpdates()
     }
 
     override fun onShowCoordinatesInputClick() {
@@ -70,21 +84,32 @@ class CompassPresenter @Inject constructor(
     }
 
     override fun onLocationInputChanged() {
-        provideLocationNameUseCase.buildUseCaseObservable(LatLng(viewModel.latCoordinate, viewModel.lngCoordinate))
-                .subscribeOn(AndroidSchedulers.mainThread())
+        provideLocationNameUseCase.buildUseCaseObservable(getLatLngFromView())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { basicLocationData: BasicLocationData? ->
                     if (basicLocationData != null) {
-                        viewModel.countryName = basicLocationData.countryName
-                        viewModel.cityName = basicLocationData.cityName
+                        viewModel?.countryName = basicLocationData.countryName
+                        viewModel?.cityName = basicLocationData.cityName
                     }
-
-                    computeDistanceUseCase.buildUseCaseObservable(LatLng(viewModel.latCoordinate, viewModel.lngCoordinate))
-                            .subscribeOn(AndroidSchedulers.mainThread())
-                            .doOnNext { distance: Float ->
-                                viewModel.distanceToDestination = distance.formatToDistanceReadable()
-                            }
-                            .subscribe()
+                    updateDistance()
                 }
                 .subscribe()
+    }
+
+    private fun updateDistance() {
+        computeDistanceUseCase.buildUseCaseObservable(getLatLngFromView())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { distance: Float ->
+                    viewModel?.distanceToDestination = distance.formatToDistanceReadable()
+                }
+                .subscribe()
+    }
+
+    private fun getLatLngFromView(): LatLng? {
+        return try {
+            LatLng(viewModel!!.latCoordinate.toDouble(), viewModel!!.lngCoordinate.toDouble())
+        } catch (e: NumberFormatException) {
+            null
+        }
     }
 }

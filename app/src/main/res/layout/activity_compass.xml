@@ -6,8 +6,6 @@
 
     <data>
 
-        <import type="java.lang.Double" />
-
         <import type="io.github.wzieba.compass.android.DataBindingConversionMethods" />
 
         <variable
@@ -96,11 +94,11 @@
             android:layout_margin="16dp"
             android:digits="-0123456789."
             android:hint="Lat"
-            android:inputType="number"
+            android:inputType="numberDecimal|numberSigned"
             android:nextFocusDown="@id/enter_coordinates_lng_input"
             android:onTextChanged="@{(text, start, before, count) -> listener.onLocationInputChanged()}"
             android:singleLine="true"
-            android:text="@={DataBindingConversionMethods.toStringValue(viewModel.latCoordinate)}"
+            android:text="@={viewModel.latCoordinate}"
             app:layout_constraintEnd_toStartOf="@id/enter_coordinates_lng_input"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="parent" />
@@ -116,7 +114,7 @@
             android:inputType="number"
             android:onTextChanged="@{(text, start, before, count) -> listener.onLocationInputChanged()}"
             android:singleLine="true"
-            android:text="@={DataBindingConversionMethods.toStringValue(viewModel.lngCoordinate)}"
+            android:text="@={viewModel.lngCoordinate}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/enter_coordinates_lat_input"
             app:layout_constraintTop_toBottomOf="parent" />
