@@ -1,7 +1,5 @@
 package io.github.wzieba.compass.mvp.compass.presenter
 
-import android.databinding.Observable
-import io.github.wzieba.compass.BR
 import io.github.wzieba.compass.di.ActivityScope
 import io.github.wzieba.compass.domain.compass.CompassValueChangeEmitter
 import io.github.wzieba.compass.domain.location.ComputeDistanceUseCase
@@ -18,6 +16,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import java.io.Serializable
 import java.util.*
 import javax.inject.Inject
+
+//TODO add use case for providing heading to location, not north as now
 
 @ActivityScope
 class CompassPresenter @Inject constructor(

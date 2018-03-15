@@ -12,8 +12,11 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /*
+Used resources are from:
 http://developer.samsung.com/technical-doc/view.do;jsessionid=16E160A31A4D4DB48D70BE5B702EF5C3?v=T000000114
  */
+
+//TODO adjust logic for screen rotation https://android-developers.googleblog.com/2010/09/one-screen-turn-deserves-another.html
 
 @ActivityScope
 class CompassValueChangeEmitter @Inject constructor(
@@ -44,7 +47,7 @@ class CompassValueChangeEmitter @Inject constructor(
                 val orientation = FloatArray(3)
                 SensorManager.getOrientation(R, orientation);
                 val azimuth = orientation[0]
-                notifier.onNext(CompassIndication((-azimuth * 360 / (2 * 3.14159f)).toInt()))
+                notifier.onNext(CompassIndication((computeDegrees(azimuth)).toInt()))
             }
         }
     }
@@ -71,4 +74,6 @@ class CompassValueChangeEmitter @Inject constructor(
                 .onBackpressureDrop()
                 .subscribeOn(Schedulers.io())
     }
+
+    private fun computeDegrees(azimuth: Float) = -azimuth * 360 / (2 * 3.14159f)
 }
