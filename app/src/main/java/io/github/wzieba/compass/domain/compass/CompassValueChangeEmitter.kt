@@ -1,4 +1,4 @@
-package io.github.wzieba.compass.data.compass
+package io.github.wzieba.compass.domain.compass
 
 import android.hardware.Sensor
 import android.hardware.SensorEvent

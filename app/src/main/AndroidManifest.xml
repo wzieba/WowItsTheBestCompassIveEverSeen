@@ -2,6 +2,8 @@
 <manifest package="io.github.wzieba.compass"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:name=".NavigatorApplication"
         android:allowBackup="true"

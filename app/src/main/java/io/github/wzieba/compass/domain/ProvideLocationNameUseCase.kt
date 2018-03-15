@@ -1,4 +1,4 @@
-package io.github.wzieba.compass.data
+package io.github.wzieba.compass.domain
 
 import android.location.Address
 import android.location.Geocoder

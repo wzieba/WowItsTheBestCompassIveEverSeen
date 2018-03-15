@@ -1,8 +1,11 @@
 package io.github.wzieba.compass.mvp.compass.presenter
 
-import io.github.wzieba.compass.data.ProvideLocationNameUseCase
-import io.github.wzieba.compass.data.compass.CompassValueChangeEmitter
+import io.github.wzieba.compass.domain.ComputeDistanceUseCase
+import io.github.wzieba.compass.domain.ProvideCurrentLocationUseCase
+import io.github.wzieba.compass.domain.ProvideLocationNameUseCase
+import io.github.wzieba.compass.domain.compass.CompassValueChangeEmitter
 import io.github.wzieba.compass.di.ActivityScope
+import io.github.wzieba.compass.formatToDistanceReadable
 import io.github.wzieba.compass.model.BasicLocationData
 import io.github.wzieba.compass.model.CompassIndication
 import io.github.wzieba.compass.model.LatLng
@@ -15,7 +18,9 @@ import javax.inject.Inject
 class CompassPresenter @Inject constructor(
         private val compassView: CompassView,
         private val provideLocationNameUseCase: ProvideLocationNameUseCase,
-        private val compassValueChangeEmitter: CompassValueChangeEmitter
+        private val compassValueChangeEmitter: CompassValueChangeEmitter,
+        private val provideCurrentLocationUseCase: ProvideCurrentLocationUseCase,
+        private val computeDistanceUseCase: ComputeDistanceUseCase
 ) : CompassView.Listener {
 
     private val viewModel = CompassViewModel()
@@ -30,10 +35,22 @@ class CompassPresenter @Inject constructor(
                     viewModel.arrowRotation = compassIndication.degree.toFloat()
                 }
                 .subscribe()
+        provideCurrentLocationUseCase.asObservable()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnNext { currentLocation: LatLng ->
+                    computeDistanceUseCase.buildUseCaseObservable(LatLng(viewModel.latCoordinate, viewModel.lngCoordinate))
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .doOnNext { distance: Float ->
+                                viewModel.distanceToDestination = distance.formatToDistanceReadable()
+                            }
+                            .subscribe()
+                }
+                .subscribe()
     }
 
     override fun onResume() {
         compassValueChangeEmitter.registerListener()
+        provideCurrentLocationUseCase.registerRequestLocationUpdates()
     }
 
     override fun onPause() {
@@ -41,6 +58,7 @@ class CompassPresenter @Inject constructor(
                 .asObservable()
                 .unsubscribeOn(AndroidSchedulers.mainThread())
         compassValueChangeEmitter.unregisterListener()
+        provideCurrentLocationUseCase.unregisterRequestLocationUpdates()
     }
 
     override fun onShowCoordinatesInputClick() {
@@ -59,6 +77,13 @@ class CompassPresenter @Inject constructor(
                         viewModel.countryName = basicLocationData.countryName
                         viewModel.cityName = basicLocationData.cityName
                     }
+
+                    computeDistanceUseCase.buildUseCaseObservable(LatLng(viewModel.latCoordinate, viewModel.lngCoordinate))
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .doOnNext { distance: Float ->
+                                viewModel.distanceToDestination = distance.formatToDistanceReadable()
+                            }
+                            .subscribe()
                 }
                 .subscribe()
     }

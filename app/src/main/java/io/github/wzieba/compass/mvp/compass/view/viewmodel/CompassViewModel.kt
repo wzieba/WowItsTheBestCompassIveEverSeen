@@ -40,4 +40,11 @@ class CompassViewModel : BaseObservable() {
             field = cityName
             notifyPropertyChanged(BR.cityName)
         }
+
+    @get:Bindable
+    var distanceToDestination: String = ""
+        set(distanceToDestination) {
+            field = distanceToDestination
+            notifyPropertyChanged(BR.distanceToDestination)
+        }
 }

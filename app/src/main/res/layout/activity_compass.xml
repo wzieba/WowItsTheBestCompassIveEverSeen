@@ -70,6 +70,7 @@
             android:id="@+id/destination_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{viewModel.distanceToDestination}"
             android:textSize="36sp"
             app:layout_constraintBottom_toTopOf="@id/enter_coordinates_button"
             app:layout_constraintEnd_toEndOf="parent"
