@@ -6,6 +6,6 @@ In addition it provides name and distance to point defined by user who provided 
 
 Can't wait for your feedback, happy using!
 
-![demo](http://url/to/img.png)
+![demo](https://raw.githubusercontent.com/wzieba/WowItsTheBestCompassIveEverSeen/master/static/demo.gif)
 
 **maybe not yet, but I believe in it strongly*
